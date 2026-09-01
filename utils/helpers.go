@@ -16,7 +16,10 @@ const (
 	alpineURL = "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/x86_64/alpine-minirootfs-3.19.1-x86_64.tar.gz"
 )
 
-// CheckAndSetupRootFS চেক করবে rootfs আছে কিনা, না থাকলে ডাউনলোড করবে
+
+
+
+
 func CheckAndSetupRootFS(lowerDir string) {
 	if _, err := os.Stat(lowerDir); os.IsNotExist(err) {
 		fmt.Println("Base rootfs not found. Triggering automated setup...")
@@ -27,7 +30,7 @@ func CheckAndSetupRootFS(lowerDir string) {
 	}
 }
 
-// setupRootFS 내부 লজিক (ছোট হাতের অক্ষরে, কারণ এটি শুধু এই প্যাকেজেই লাগবে)
+
 func setupRootFS(targetDir string) error {
 	os.MkdirAll(targetDir, 0755)
 
@@ -86,7 +89,7 @@ func setupRootFS(targetDir string) error {
 	return nil
 }
 
-// MountOverlayFS কন্টেইনারের জন্য OverlayFS লেয়ার মাউন্ট করবে
+
 func MountOverlayFS(lowerDir, upperDir, workDir, mergedDir string) {
 	opts := fmt.Sprintf("lowerdir=%s,upperdir=%s,workdir=%s", lowerDir, upperDir, workDir)
 	err := syscall.Mount("overlay", mergedDir, "overlay", 0, opts)
@@ -96,7 +99,9 @@ func MountOverlayFS(lowerDir, upperDir, workDir, mergedDir string) {
 	}
 }
 
-// IsolateAndPivotRoot কন্টেইনারের ফাইলসিস্টেম এবং প্রসেস আইসোলেট করবে
+
+
+
 func IsolateAndPivotRoot(mergedDir string) {
 	err := syscall.Chroot(mergedDir)
 	if err != nil {
@@ -109,7 +114,7 @@ func IsolateAndPivotRoot(mergedDir string) {
 	syscall.Sethostname([]byte("my-isolated-container"))
 }
 
-// CreateContainerDirs কন্টেইনারের জন্য প্রয়োজনীয় ডিরেক্টরি তৈরি করে
+// CreateContainerDirs 
 func CreateContainerDirs(upper, work, merged string) {
 	os.MkdirAll(upper, 0755)
 	os.MkdirAll(work, 0755)
